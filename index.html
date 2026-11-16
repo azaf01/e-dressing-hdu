@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#0b5394">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex,nofollow">
+<title>e-Dressing HDU</title>
+<meta charset="utf-8">
+<style>
+  :root{--p:#0b5394;--p2:#e8f0fa;--ok:#1e8e3e;--err:#c5221f;--bd:#d5dbe3;--tx:#1f2937;--mut:#6b7280}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#f3f6fa;color:var(--tx);font-size:15px}
+  header{background:var(--p);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:5}
+  header h1{margin:0;font-size:18px}
+  header p{margin:2px 0 0;font-size:12px;opacity:.85}
+  .tabs{display:flex;background:#fff;border-bottom:1px solid var(--bd);position:sticky;top:58px;z-index:4}
+  .tabs button{flex:1;border:0;background:none;padding:12px;font-size:14px;font-weight:600;color:var(--mut);border-bottom:3px solid transparent}
+  .tabs button.on{color:var(--p);border-bottom-color:var(--p)}
+  main{max-width:640px;margin:0 auto;padding:14px}
+  .card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+  .card h2{font-size:14px;margin:0 0 10px;color:var(--p);text-transform:uppercase;letter-spacing:.4px}
+  label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}
+  label .req{color:var(--err)}
+  input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--bd);border-radius:8px;font-size:16px;background:#fff;color:var(--tx);font-family:inherit}
+  textarea{min-height:70px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--p2);border-color:var(--p)}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .seg{display:flex;gap:8px;flex-wrap:wrap}
+  .seg input{display:none}
+  .seg label{flex:1;min-width:70px;margin:0;text-align:center;padding:11px 6px;border:1.5px solid var(--bd);border-radius:8px;font-weight:600;cursor:pointer;background:#fff}
+  .seg input:checked+label{background:var(--p);border-color:var(--p);color:#fff}
+  .btn{display:block;width:100%;border:0;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer}
+  .btn.pri{background:var(--p);color:#fff}
+  .btn.sec{background:var(--p2);color:var(--p)}
+  .btn:disabled{opacity:.55}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+  .thumb{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:#eee;border:1px solid var(--bd)}
+  .thumb img{width:100%;height:100%;object-fit:cover}
+  .thumb button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:15px;line-height:26px;padding:0}
+  .hint{font-size:12px;color:var(--mut);margin-top:6px}
+  .msg{padding:12px;border-radius:8px;margin-bottom:12px;font-weight:600;display:none}
+  .msg.ok{display:block;background:#e6f4ea;color:var(--ok)}
+  .msg.err{display:block;background:#fce8e6;color:var(--err)}
+  .prog{height:8px;background:#e5e7eb;border-radius:8px;overflow:hidden;margin-top:10px;display:none}
+  .prog div{height:100%;width:0;background:var(--p);transition:width .3s}
+  .rec{border-bottom:1px solid #eef1f5;padding:10px 0}
+  .rec:last-child{border:0}
+  .rec b{display:block}
+  .rec small{color:var(--mut)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:5px;background:var(--p2);color:var(--p);margin-right:4px}
+  .rec a{font-size:13px;color:var(--p);margin-right:10px}
+  #pinBox{max-width:340px;margin:60px auto;text-align:center}
+  #pinBox input{text-align:center;font-size:24px;letter-spacing:8px}
+  .hide{display:none!important}
+  .spin{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-right-color:transparent;border-radius:50%;animation:s .7s linear infinite;vertical-align:-3px;margin-right:6px}
+  @keyframes s{to{transform:rotate(360deg)}}
+  .phb{display:inline-block;border:1px solid var(--p);background:#fff;color:var(--p);border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;margin:6px 6px 0 0;cursor:pointer}
+  #lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px}
+  #lb img{max-width:100%;max-height:80vh;border-radius:6px}
+  #lb .lbtx{color:#fff;font-size:13px;margin-top:10px;text-align:center}
+  #lb .lbx{position:absolute;top:10px;right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;font-size:22px}
+  #lb .lbnav{display:flex;gap:10px;margin-top:10px}
+  #lb .lbnav button{border:0;border-radius:8px;padding:10px 16px;font-weight:700;background:#fff;color:var(--p)}
+  footer{text-align:center;font-size:11px;color:var(--mut);padding:16px}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="hTitle">e-Dressing HDU</h1>
+  <p id="hSub">Rekod Gambar Dressing IJC / FVC Sebelum HD</p>
+</header>
+
+<!-- PIN -->
+<div id="pinView" class="hide">
+  <div id="pinBox" class="card">
+    <h2>Masukkan PIN</h2>
+    <input id="pin" type="password" inputmode="numeric" maxlength="10" autocomplete="off">
+    <div id="pinMsg" class="msg" style="margin-top:10px"></div>
+    <button class="btn pri" style="margin-top:12px" onclick="doPin()">Masuk</button>
+  </div>
+</div>
+
+<div id="appView" class="hide">
+  <div class="tabs">
+    <button id="tForm" class="on" onclick="tab('form')">📷 Rekod Baru</button>
+    <button id="tList" onclick="tab('list')">📋 Rekod Terkini</button>
+  </div>
+
+  <main id="formView">
+    <div id="msg" class="msg"></div>
+
+    <div class="card">
+      <h2>Maklumat Pesakit</h2>
+      <label>Tarikh &amp; Masa <span class="req">*</span></label>
+      <input id="tarikh" type="datetime-local">
+
+      <label>Nama Pesakit <span class="req">*</span></label>
+      <input id="nama" list="dlPesakit" autocomplete="off" placeholder="Taip nama pesakit" style="text-transform:uppercase">
+      <datalist id="dlPesakit"></datalist>
+
+      <div class="row">
+        <div>
+          <label id="lblSa">No. SA Pesakit <span class="req">*</span></label>
+          <input id="sa" autocomplete="off" style="text-transform:uppercase">
+        </div>
+        <div>
+          <label>Wad <span class="req">*</span></label>
+          <input id="wad" list="dlWad" autocomplete="off" placeholder="Pilih / taip">
+          <datalist id="dlWad"></datalist>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Akses Vaskular</h2>
+      <label>Jenis Akses <span class="req">*</span></label>
+      <div class="seg">
+        <input type="radio" name="akses" id="a1" value="IJC"><label for="a1">IJC</label>
+        <input type="radio" name="akses" id="a2" value="FVC"><label for="a2">FVC</label>
+      </div>
+      <label>Sisi</label>
+      <div class="seg">
+        <input type="radio" name="sisi" id="s1" value="Kanan"><label for="s1">Kanan</label>
+        <input type="radio" name="sisi" id="s2" value="Kiri"><label for="s2">Kiri</label>
+      </div>
+      <label>Keadaan Tapak</label>
+      <select id="keadaan">
+        <option value="">— Pilih —</option>
+        <option>Bersih &amp; Kering</option>
+        <option>Kemerahan</option>
+        <option>Bengkak</option>
+        <option>Discaj / Nanah</option>
+        <option>Berdarah</option>
+        <option>Dressing Basah / Tercabut</option>
+        <option>Lain-lain (catatan)</option>
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>Gambar Dressing <span class="req">*</span></h2>
+      <div class="two">
+        <button class="btn sec" type="button" onclick="document.getElementById('cam').click()">📷 Ambil Gambar</button>
+        <button class="btn sec" type="button" onclick="document.getElementById('gal').click()">🖼️ Galeri</button>
+      </div>
+      <input id="cam" type="file" accept="image/*" capture="environment" class="hide" onchange="addFiles(this)">
+      <input id="gal" type="file" accept="image/*" multiple class="hide" onchange="addFiles(this)">
+      <div id="thumbs" class="thumbs"></div>
+      <div class="hint">Gambar dimampatkan secara automatik &amp; dicop tarikh, masa dan No. SA. Maksimum 6 gambar.</div>
+    </div>
+
+    <div class="card">
+      <h2>Staf &amp; Catatan</h2>
+      <label>Staf Bertugas <span class="req">*</span></label>
+      <input id="staf" list="dlStaf" autocomplete="off" placeholder="Nama staf yang attend">
+      <datalist id="dlStaf"></datalist>
+      <label>Catatan</label>
+      <textarea id="catatan" placeholder="Pilihan"></textarea>
+    </div>
+
+    <button id="btnHantar" class="btn pri" onclick="hantar()">Hantar Rekod</button>
+    <div class="prog" id="prog"><div id="progBar"></div></div>
+    <div class="hint" id="progTxt" style="text-align:center"></div>
+  </main>
+
+  <main id="listView" class="hide">
+    <div class="card">
+      <h2>20 Rekod Terkini</h2>
+      <div id="recList"><small>Memuatkan…</small></div>
+    </div>
+    <button class="btn sec" onclick="loadRecent()">↻ Muat Semula</button>
+  </main>
+
+  <footer id="foot">Unit Hemodialisis, Hospital Shah Alam</footer>
+</div>
+
+<div id="lb" class="hide">
+  <button class="lbx" onclick="closeLb()">✕</button>
+  <div id="lbBody"></div>
+  <div class="lbtx" id="lbTx"></div>
+  <div class="lbnav"><button onclick="navLb(-1)">‹ Sebelum</button><button onclick="navLb(1)">Seterus ›</button></div>
+</div>
+
+<script>
+let CFG = {}, PIN = '', PHOTOS = [], PATIENTS = [];
+const MAX_PHOTOS = 6, MAX_DIM = 1600, QUALITY = 0.82;
+const $ = id => document.getElementById(id);
+
+// ===== URL API (Apps Script Web App — JANGAN ada /u/0/, /u/6/ dsb) =====
+const API_URL = 'https://script.google.com/macros/s/AKfycbxB4aA77i691hYWiKJ5OSP8p2R7z3V3_T4zg5Y2dGDZMQFfA_2PoDcxOFYQmBkJks18/exec';
+
+const ARGMAP = { getAppConfig: [], checkPin: ['pin'], getPatients: ['pin'], uploadPhoto: ['pin', 'photo'],
+  saveRecord: ['pin', 'data'], getRecent: ['pin', 'limit'], getPhoto: ['pin', 'id'] };
+
+const DEV = (() => { try { let d = localStorage.getItem('edress_dev'); if (!d) { d = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem('edress_dev', d); } return d; } catch (e) { return 'nodev'; } })();
+async function gs(fn, ...args) {
+  if (fn !== 'getAppConfig') args[0] = { pin: args[0], dev: DEV };
+  const body = { action: fn };
+  (ARGMAP[fn] || []).forEach((k, i) => body[k] = args[i]);
+  let r;
+  try {
+    r = await fetch(API_URL, { method: 'POST', redirect: 'follow', credentials: 'omit',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+  } catch (e) { throw new Error('Tiada sambungan ke server. Semak internet / deploy Apps Script (Who has access = Anyone).'); }
+  let j;
+  try { j = await r.json(); }
+  catch (e) { throw new Error('Server tidak memberi respons sah. Semak deploy Apps Script: Who has access = Anyone.'); }
+  if (!j.ok) throw new Error(j.error || 'Ralat tidak diketahui');
+  return j.data;
+}
+
+function nowLocal() {
+  const d = new Date(), p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function showMsg(el, type, text) { el.className = 'msg ' + type; el.textContent = text; }
+
+// ---------- Init ----------
+gs('getAppConfig').then(c => {
+  CFG = c;
+  $('hTitle').textContent = c.appName;
+  $('hSub').textContent = c.subtitle;
+  $('foot').textContent = c.unit;
+  $('lblSa').innerHTML = c.labelSa + ' <span class="req">*</span>';
+  $('dlWad').innerHTML = c.wards.map(w => `<option value="${esc(w)}">`).join('');
+  $('dlStaf').innerHTML = c.staff.map(w => `<option value="${esc(w)}">`).join('');
+  const saved = localStorage.getItem('edress_pin') || '';
+  if (!c.needPin) { startApp(); }
+  else if (saved) { PIN = saved; gs('checkPin', saved).then(startApp).catch(() => { localStorage.removeItem('edress_pin'); $('pinView').classList.remove('hide'); }); }
+  else { $('pinView').classList.remove('hide'); }
+}).catch(e => alert('Ralat memuatkan: ' + e.message));
+
+function doPin() {
+  const v = $('pin').value.trim();
+  gs('checkPin', v).then(() => {
+    PIN = v; try { localStorage.setItem('edress_pin', v); } catch (e) {}
+    $('pinView').classList.add('hide'); startApp();
+  }).catch(e => showMsg($('pinMsg'), 'err', e.message));
+}
+$('pin') && $('pin').addEventListener('keydown', e => { if (e.key === 'Enter') doPin(); });
+
+function startApp() {
+  $('pinView').classList.add('hide');
+  $('appView').classList.remove('hide');
+  $('tarikh').value = nowLocal();
+  const st = localStorage.getItem('edress_staf'); if (st) $('staf').value = st;
+  loadPatients();
+}
+
+function loadPatients() {
+  gs('getPatients', PIN).then(list => {
+    PATIENTS = list;
+    $('dlPesakit').innerHTML = list.map(p => `<option value="${esc(p.nama)}">${esc(p.sa)} · ${esc(p.wad)}</option>`).join('');
+  }).catch(() => {});
+}
+
+$('nama').addEventListener('change', () => {
+  const v = $('nama').value.trim().toUpperCase();
+  const p = PATIENTS.find(x => x.nama.toUpperCase() === v);
+  if (p) { if (!$('sa').value) $('sa').value = p.sa; if (!$('wad').value) $('wad').value = p.wad; }
+});
+
+function tab(t) {
+  $('tForm').classList.toggle('on', t === 'form');
+  $('tList').classList.toggle('on', t === 'list');
+  $('formView').classList.toggle('hide', t !== 'form');
+  $('listView').classList.toggle('hide', t !== 'list');
+  if (t === 'list') loadRecent();
+}
+
+// ---------- Gambar ----------
+function addFiles(input) {
+  const files = Array.from(input.files || []);
+  input.value = '';
+  files.forEach(f => {
+    if (PHOTOS.length >= MAX_PHOTOS) return;
+    const item = { file: f, url: URL.createObjectURL(f) };
+    PHOTOS.push(item);
+  });
+  if (files.length && PHOTOS.length >= MAX_PHOTOS) showMsg($('msg'), 'err', 'Maksimum ' + MAX_PHOTOS + ' gambar.');
+  renderThumbs();
+}
+
+function renderThumbs() {
+  $('thumbs').innerHTML = PHOTOS.map((p, i) =>
+    `<div class="thumb"><img src="${p.url}"><button type="button" onclick="rmPhoto(${i})">✕</button></div>`).join('');
+}
+function rmPhoto(i) { URL.revokeObjectURL(PHOTOS[i].url); PHOTOS.splice(i, 1); renderThumbs(); }
+
+function loadImg(url) {
+  return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('Gambar tidak dapat dibaca')); im.src = url; });
+}
+
+// Mampat + cop maklumat pada gambar
+async function processPhoto(p, stampText) {
+  const im = await loadImg(p.url);
+  let w = im.naturalWidth, h = im.naturalHeight;
+  const sc = Math.min(1, MAX_DIM / Math.max(w, h));
+  w = Math.round(w * sc); h = Math.round(h * sc);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(im, 0, 0, w, h);
+  const fs = Math.max(14, Math.round(w / 38));
+  ctx.font = `bold ${fs}px sans-serif`;
+  const lines = stampText.split('\n');
+  const pad = Math.round(fs * 0.5), lh = Math.round(fs * 1.3);
+  const boxH = lines.length * lh + pad * 2;
+  ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0, h - boxH, w, boxH);
+  ctx.fillStyle = '#fff'; ctx.textBaseline = 'top';
+  lines.forEach((l, i) => ctx.fillText(l, pad, h - boxH + pad + i * lh));
+  const dataUrl = c.toDataURL('image/jpeg', QUALITY);
+  return dataUrl.split(',')[1];
+}
+
+// ---------- Hantar ----------
+function val(id) { return $(id).value.trim(); }
+function radio(n) { const r = document.querySelector(`input[name="${n}"]:checked`); return r ? r.value : ''; }
+
+async function hantar() {
+  const d = {
+    tarikh: val('tarikh'), nama: val('nama').toUpperCase(), sa: val('sa').toUpperCase(),
+    wad: val('wad'), akses: radio('akses'), sisi: radio('sisi'), keadaan: val('keadaan'),
+    staf: val('staf'), catatan: val('catatan')
+  };
+  const miss = [];
+  if (!d.tarikh) miss.push('Tarikh & Masa');
+  if (!d.nama) miss.push('Nama Pesakit');
+  if (!d.sa) miss.push(CFG.labelSa || 'No. SA');
+  if (!d.wad) miss.push('Wad');
+  if (!d.akses) miss.push('Jenis Akses');
+  if (!d.staf) miss.push('Staf Bertugas');
+  if (!PHOTOS.length) miss.push('Gambar');
+  if (miss.length) { showMsg($('msg'), 'err', 'Sila lengkapkan: ' + miss.join(', ')); window.scrollTo(0, 0); return; }
+
+  const btn = $('btnHantar');
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Menghantar…';
+  $('prog').style.display = 'block'; $('msg').className = 'msg';
+  const total = PHOTOS.length + 1; let done = 0;
+  const step = t => { done++; $('progBar').style.width = (done / total * 100) + '%'; $('progTxt').textContent = t; };
+
+  try {
+    const dt = d.tarikh.replace('T', ' ').split(' ');
+    const dmy = dt[0].split('-').reverse().join('/');
+    const stamp = `${d.akses}${d.sisi ? ' ' + d.sisi : ''} | ${d.sa} | ${d.wad}\n${dmy} ${dt[1]} | ${d.staf}`;
+    const fBase = `${d.sa}_${d.akses}_${dt[0].replace(/-/g, '')}_${dt[1].replace(':', '')}`.replace(/[^\w\-]/g, '_');
+    const files = [];
+    $('progTxt').textContent = 'Memproses gambar…';
+    for (let i = 0; i < PHOTOS.length; i++) {
+      const b64 = await processPhoto(PHOTOS[i], stamp);
+      const r = await gs('uploadPhoto', PIN, {
+        b64, mime: 'image/jpeg', name: `${fBase}_${i + 1}.jpg`,
+        tarikh: d.tarikh, nama: d.nama, sa: d.sa, akses: d.akses
+      });
+      files.push(r);
+      step(`Gambar ${i + 1}/${PHOTOS.length} dimuat naik`);
+    }
+    d.files = files;
+    const res = await gs('saveRecord', PIN, d);
+    step('Selesai');
+    try { localStorage.setItem('edress_staf', d.staf); } catch (e) {}
+    showMsg($('msg'), 'ok', `✅ Rekod berjaya disimpan (${res.id}) — ${files.length} gambar.`);
+    resetForm();
+    loadPatients();
+  } catch (e) {
+    showMsg($('msg'), 'err', 'Gagal: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Hantar Rekod';
+    setTimeout(() => { $('prog').style.display = 'none'; $('progBar').style.width = 0; $('progTxt').textContent = ''; }, 1500);
+    window.scrollTo(0, 0);
+  }
+}
+
+function resetForm() {
+  ['nama', 'sa', 'wad', 'catatan'].forEach(id => $(id).value = '');
+  $('keadaan').value = '';
+  document.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+  PHOTOS.forEach(p => URL.revokeObjectURL(p.url)); PHOTOS = []; renderThumbs();
+  $('tarikh').value = nowLocal();
+}
+
+// ---------- Senarai ----------
+function loadRecent() {
+  $('recList').innerHTML = '<small>Memuatkan…</small>';
+  gs('getRecent', PIN, 20).then(list => {
+    if (!list.length) { $('recList').innerHTML = '<small>Tiada rekod lagi.</small>'; return; }
+    REC = list;
+    $('recList').innerHTML = list.map((r, ri) => `
+      <div class="rec">
+        <b>${esc(r.nama)}</b>
+        <small>${esc(r.sa)} · ${esc(r.wad)} · ${esc(r.tarikh)}</small><br>
+        <span class="tag">${esc(r.akses)}${r.sisi ? ' ' + esc(r.sisi) : ''}</span>${r.keadaan ? `<span class="tag">${esc(r.keadaan)}</span>` : ''}
+        <small>Staf: ${esc(r.staf)}</small><br>
+        <div>${r.links.map((l, i) => `<button type="button" class="phb" onclick="openRec(${ri},${i})">🖼️ Gambar ${i + 1}</button>`).join('')}</div>
+      </div>`).join('');
+  }).catch(e => $('recList').innerHTML = `<small style="color:#c5221f">${esc(e.message)}</small>`);
+}
+
+// ---------- Paparan gambar (tanpa login Drive) ----------
+let REC = []; const PHC = {};
+function openRec(ri, i) { const r = REC[ri]; openLb(r.links.map(fid), i, r.nama + ' · ' + r.sa); }
+ let LB = { ids: [], i: 0, cap: '' };
+function fid(u) { const m = String(u).match(/\/d\/([\w-]+)/) || String(u).match(/[?&]id=([\w-]+)/); return m ? m[1] : String(u); }
+function openLb(ids, i, cap) { LB = { ids, i, cap }; $('lb').classList.remove('hide'); showLb(); }
+function closeLb() { $('lb').classList.add('hide'); $('lbBody').innerHTML = ''; }
+function navLb(d) { if (!LB.ids.length) return; LB.i = (LB.i + d + LB.ids.length) % LB.ids.length; showLb(); }
+function showLb() {
+  const id = LB.ids[LB.i];
+  $('lbTx').textContent = `${LB.cap} — Gambar ${LB.i + 1}/${LB.ids.length}`;
+  if (PHC[id]) { $('lbBody').innerHTML = `<img src="${PHC[id]}">`; return; }
+  $('lbBody').innerHTML = '<span class="spin" style="width:32px;height:32px"></span>';
+  gs('getPhoto', PIN, id).then(src => { PHC[id] = src; if (LB.ids[LB.i] === id) $('lbBody').innerHTML = `<img src="${src}">`; })
+    .catch(e => { $('lbBody').innerHTML = `<div style="color:#fff">Gagal: ${esc(e.message)}</div>`; });
+}
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+</script>
+</body>
+</html>
